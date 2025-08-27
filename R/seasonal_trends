@@ -1,0 +1,49 @@
+df <- read_csv("results/seasonal_trends.csv")
+ggplot(df, aes(x=month, y=mean_value)) +
+  geom_line(color="blue") +
+  theme_minimal()
+pgsql
+Copy code
+
+---
+
+## 🔹 `dashboards/app.R`
+```r
+library(shiny)
+library(tidyverse)
+library(ggplot2)
+
+ui <- fluidPage(
+  titlePanel("Environmental Data Dashboard"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("sensor", "Select Sensor:", choices = NULL)
+    ),
+    mainPanel(
+      plotOutput("trendPlot"),
+      tableOutput("summaryTable")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  df <- read_csv("results/seasonal_trends.csv")
+  updateSelectInput(session, "sensor", choices = unique(df$sensor_id))
+
+  output$trendPlot <- renderPlot({
+    ggplot(df %>% filter(sensor_id == input$sensor), aes(x=month, y=mean_value)) +
+      geom_line(color="darkgreen") +
+      theme_minimal()
+  })
+
+  output$summaryTable <- renderTable({
+    df %>% filter(sensor_id == input$sensor) %>%
+      summarise(
+        Avg=mean(mean_value),
+        Min=min(mean_value),
+        Max=max(mean_value)
+      )
+  })
+}
+
+shinyApp(ui, server)
