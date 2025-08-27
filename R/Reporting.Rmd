@@ -1,0 +1,8 @@
+---
+title: "Environmental Data Report"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggplot2)
