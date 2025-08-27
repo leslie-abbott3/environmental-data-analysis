@@ -1,0 +1,10 @@
+database:
+  path: "env_data.db"
+
+analysis:
+  seasonal: true
+  annual: true
+  output: "results/seasonal_trends.csv"
+
+report:
+  output: "results/report.html"
